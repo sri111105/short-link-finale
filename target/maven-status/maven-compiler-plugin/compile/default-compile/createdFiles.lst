@@ -1,0 +1,5 @@
+com\example\urlshortener\UrlShortenerApplication.class
+com\example\urlshortener\entity\UrlMapping.class
+com\example\urlshortener\repository\UrlMappingRepository.class
+com\example\urlshortener\controller\UrlShortenerController.class
+com\example\urlshortener\service\UrlShortenerService.class
