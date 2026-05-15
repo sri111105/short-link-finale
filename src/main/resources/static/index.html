@@ -1,232 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL Shortener Service</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            color: #007bff;
-        }
-
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .delete-btn {
-            padding: 6px 12px;
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-    </style>
+    <title>ShortLink | Premium URL Shortener</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
-
-    <h1>URL Shortener Service</h1>
-
-    <div class="container">
-        <h2>Shorten a new URL</h2>
-        <div class="input-group">
-            <input type="text" id="longUrl" placeholder="Enter a long URL here..." required>
-            <button onclick="shortenUrl()">Shorten</button>
-        </div>
-        <div id="result" style="margin-top: 10px;"></div>
+    <div class="header">
+        <h1>ShortLink</h1>
+        <p>Shorten your links, track your clicks, and grow your reach.</p>
     </div>
 
     <div class="container">
-        <h2>Analytics Dashboard</h2>
-        <button onclick="loadStats()" style="margin-bottom: 10px; background-color: #28a745;">Refresh Stats</button>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Original URL</th>
-                    <th>Short URL</th>
-                    <th>Clicks</th>
-                    <th>Created Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="statsTableBody">
-                <!-- Rows will be populated here -->
-            </tbody>
-        </table>
+        <div class="card">
+            <h2 style="font-weight: 700; font-size: 1.5rem;">Shorten a Link</h2>
+            <div class="input-group">
+                <input type="text" id="longUrl" placeholder="Paste your long URL here..." required>
+                <button class="btn btn-primary" onclick="shortenUrl()">
+                    <i data-lucide="link"></i>
+                    Shorten
+                </button>
+            </div>
+            <div id="resultArea" class="result-area">
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 4px;">Your short link is ready!</p>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <a id="shortUrlDisplay" href="#" target="_blank" class="url-link" style="font-size: 1.25rem;"></a>
+                    <button class="btn" style="padding: 8px; background: transparent; color: var(--primary);" onclick="copyToClipboard()">
+                        <i data-lucide="copy" style="width: 20px;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="font-weight: 700; font-size: 1.5rem;">Analytics Dashboard</h2>
+                <button class="btn btn-refresh" onclick="loadStats()">
+                    <i data-lucide="refresh-cw" style="width: 18px;"></i>
+                    Refresh
+                </button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Original URL</th>
+                            <th>Short Code</th>
+                            <th>Clicks</th>
+                            <th>Date Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsTableBody">
+                        <!-- Rows populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
         async function shortenUrl() {
-            const longUrl = document.getElementById('longUrl').value;
+            const longUrlInput = document.getElementById('longUrl');
+            const longUrl = longUrlInput.value;
+            
             if (!longUrl) {
-                alert("Please enter a URL");
+                showToast("Please enter a URL", "error");
                 return;
             }
 
             try {
-                const response = await fetch('/api/urls/shorten', {
+                const response = await fetch('/api/v1/urls/shorten', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ longUrl: longUrl })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     const shortUrl = window.location.origin + "/" + data.shortCode;
-                    document.getElementById('result').innerHTML =
-                        `Short URL created: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
-                    document.getElementById('longUrl').value = '';
+                    
+                    const resultArea = document.getElementById('resultArea');
+                    const shortUrlDisplay = document.getElementById('shortUrlDisplay');
+                    
+                    shortUrlDisplay.href = shortUrl;
+                    shortUrlDisplay.innerText = shortUrl;
+                    resultArea.style.display = 'block';
+                    
+                    longUrlInput.value = '';
                     loadStats();
                 } else {
-                    alert("Error shortening URL");
+                    showToast("Error shortening URL", "error");
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("Failed to shorten URL");
+                showToast("Connection failed", "error");
             }
         }
 
         async function loadStats() {
             try {
-                const response = await fetch('/api/urls/stats');
+                const response = await fetch('/api/v1/urls/stats');
                 const data = await response.json();
                 const tbody = document.getElementById('statsTableBody');
                 tbody.innerHTML = '';
 
-                data.forEach(item => {
+                data.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate)).forEach(item => {
                     const shortUrl = window.location.origin + "/" + item.shortCode;
                     const row = `
                         <tr>
-                            <td>${item.id}</td>
-                            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.longUrl}">
-                                <a href="${item.longUrl}" target="_blank">${item.longUrl}</a>
+                            <td title="${item.longUrl}">
+                                <div style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    ${item.longUrl}
+                                </div>
                             </td>
-                            <td><a href="${shortUrl}" target="_blank">${shortUrl}</a></td>
-                            <td>${item.clickCount}</td>
-                            <td>${new Date(item.createdDate).toLocaleString()}</td>
+                            <td><a href="${shortUrl}" target="_blank" class="url-link">${item.shortCode}</a></td>
                             <td>
-                                <button class="delete-btn" onclick="deleteUrl(${item.id})">Delete</button>
+                                <span style="font-weight: 600; color: var(--primary);">
+                                    ${item.clickCount}
+                                </span>
+                            </td>
+                            <td style="font-size: 0.875rem; color: var(--text-muted);">
+                                ${new Date(item.createdDate).toLocaleDateString()}
+                            </td>
+                            <td>
+                                <button class="btn btn-delete" onclick="deleteUrl(${item.id})">
+                                    <i data-lucide="trash-2" style="width: 16px;"></i>
+                                </button>
                             </td>
                         </tr>
                     `;
                     tbody.innerHTML += row;
                 });
+                lucide.createIcons();
             } catch (error) {
                 console.error("Error loading stats:", error);
             }
         }
 
         async function deleteUrl(id) {
-            if (!confirm('Are you sure you want to delete this URL?')) {
-                return;
-            }
+            if (!confirm('Are you sure you want to delete this URL?')) return;
 
             try {
-                const response = await fetch(`/api/urls/${id}`, {
-                    method: 'DELETE'
-                });
-
+                const response = await fetch(`/api/v1/urls/${id}`, { method: 'DELETE' });
                 if (response.ok) {
-                    alert('URL deleted successfully');
                     loadStats();
                 } else {
                     alert('Failed to delete URL');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to delete URL');
             }
+        }
+
+        function copyToClipboard() {
+            const shortUrl = document.getElementById('shortUrlDisplay').innerText;
+            navigator.clipboard.writeText(shortUrl).then(() => {
+                alert("Link copied to clipboard!");
+            });
+        }
+
+        function showToast(message, type) {
+            alert(message); // Simple alert for now, can be improved to a toast
         }
 
         // Load stats on page load
         loadStats();
     </script>
 </body>
-
 </html>

@@ -1,6 +1,6 @@
-package com.example.urlshortener.repository;
+package com.shortlink.repository;
 
-import com.example.urlshortener.entity.UrlMapping;
+import com.shortlink.entity.UrlMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

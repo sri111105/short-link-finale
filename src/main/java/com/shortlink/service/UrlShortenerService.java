@@ -1,8 +1,8 @@
-package com.example.urlshortener.service;
+package com.shortlink.service;
 
-import com.example.urlshortener.entity.UrlMapping;
-import com.example.urlshortener.repository.UrlMappingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.shortlink.entity.UrlMapping;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -10,17 +10,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UrlShortenerService {
 
-    @Autowired
-    private UrlMappingRepository repository;
+    private final UrlMappingRepository repository;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int SHORT_CODE_LENGTH = 6;
     private final SecureRandom random = new SecureRandom();
 
-    @org.springframework.beans.factory.annotation.Value("${app.base-url}")
-    private String baseUrl;
+    public UrlShortenerService(UrlMappingRepository repository) {
+        this.repository = repository;
+    }
 
     public UrlMapping shortenUrl(String longUrl) {
         // Check if unique constraint might be an issue, but for now simple random generation
@@ -33,12 +37,7 @@ public class UrlShortenerService {
         urlMapping.setLongUrl(longUrl);
         urlMapping.setShortCode(shortCode);
         
-        System.out.println("=================================================");
-        System.out.println("NEW URL GENERATED:");
-        System.out.println("Original: " + longUrl);
-        System.out.println("Short Code: " + shortCode);
-        System.out.println("Full Link: " + baseUrl + shortCode);
-        System.out.println("=================================================");
+        log.info("Successfully shortened URL: {} -> {}", longUrl, shortCode);
         
         return repository.save(urlMapping);
     }

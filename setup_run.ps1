@@ -62,5 +62,5 @@ else {
 }
 
 # 4. Run the project
-Write-Host "Starting URL Shortener Service..."
+Write-Host "Starting ShortLink Service..."
 & $mvnBin spring-boot:run

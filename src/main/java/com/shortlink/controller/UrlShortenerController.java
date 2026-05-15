@@ -1,27 +1,33 @@
-package com.example.urlshortener.controller;
+package com.shortlink.controller;
 
-import com.example.urlshortener.entity.UrlMapping;
-import com.example.urlshortener.service.UrlShortenerService;
+import com.shortlink.entity.UrlMapping;
+import com.shortlink.service.UrlShortenerService;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 public class UrlShortenerController {
 
-    @Autowired
-    private UrlShortenerService service;
+    private final UrlShortenerService service;
 
-    @PostMapping("/api/urls/shorten")
+    public UrlShortenerController(UrlShortenerService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/api/v1/urls/shorten")
     public ResponseEntity<UrlMapping> shortenUrl(@RequestBody Map<String, String> request) {
         String longUrl = request.get("longUrl");
+        log.info("Received request to shorten URL: {}", longUrl);
         if (longUrl == null || longUrl.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -29,13 +35,14 @@ public class UrlShortenerController {
         return ResponseEntity.ok(created);
     }
 
-    @GetMapping("/api/urls/stats")
+    @GetMapping("/api/v1/urls/stats")
     public List<UrlMapping> getStats() {
         return service.getAllUrls();
     }
 
     @GetMapping("/{shortCode:[a-zA-Z0-9]{6}}")
     public void redirect(@PathVariable String shortCode, HttpServletResponse response) throws IOException {
+        log.info("Redirecting short code: {}", shortCode);
         Optional<UrlMapping> mapping = service.getOriginalUrl(shortCode);
         if (mapping.isPresent()) {
             service.incrementClickCount(mapping.get());
@@ -45,8 +52,9 @@ public class UrlShortenerController {
         }
     }
 
-    @DeleteMapping("/api/urls/{id}")
+    @DeleteMapping("/api/v1/urls/{id}")
     public ResponseEntity<Map<String, String>> deleteUrl(@PathVariable Long id) {
+        log.info("Deleting URL mapping with ID: {}", id);
         boolean deleted = service.deleteUrl(id);
         if (deleted) {
             return ResponseEntity.ok(Map.of("message", "URL deleted successfully"));

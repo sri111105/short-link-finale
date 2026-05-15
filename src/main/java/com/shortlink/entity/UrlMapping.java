@@ -1,4 +1,4 @@
-package com.example.urlshortener.entity;
+package com.shortlink.entity;
 
 import javax.persistence.*;
 import lombok.Data;
